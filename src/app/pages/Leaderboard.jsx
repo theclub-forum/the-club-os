@@ -6,6 +6,9 @@ export default function Leaderboard() {
   const [leaderboard, setLeaderboard] =
     useState([]);
 
+  const isMobile =
+    window.innerWidth <= 900;
+
   useEffect(() => {
     async function loadLeaderboard() {
       const { data, error } =
@@ -51,21 +54,31 @@ export default function Leaderboard() {
         background:
           "linear-gradient(to bottom right, rgba(255,255,255,0.04), rgba(255,255,255,0.015))",
 
-        padding: "50px",
+        padding: isMobile
+          ? "22px"
+          : "50px",
 
         backdropFilter:
           "blur(20px)",
+
+        overflow: "hidden",
       }}
     >
       <div
         style={{
-          fontSize: "11px",
+          fontSize: isMobile
+            ? "9px"
+            : "11px",
 
-          letterSpacing: "5px",
+          letterSpacing: isMobile
+            ? "3px"
+            : "5px",
 
           opacity: 0.35,
 
-          marginBottom: "18px",
+          marginBottom: isMobile
+            ? "12px"
+            : "18px",
         }}
       >
         GLOBAL REPUTATION INDEX
@@ -73,11 +86,19 @@ export default function Leaderboard() {
 
       <div
         style={{
-          fontSize: "62px",
+          fontSize: isMobile
+            ? "42px"
+            : "62px",
+
+          lineHeight: isMobile
+            ? "1"
+            : undefined,
 
           fontWeight: 300,
 
-          marginBottom: "50px",
+          marginBottom: isMobile
+            ? "30px"
+            : "50px",
         }}
       >
         Leaderboard
@@ -87,13 +108,17 @@ export default function Leaderboard() {
         0 && (
         <div
           style={{
-            padding: "80px 0",
+            padding: isMobile
+              ? "50px 0"
+              : "80px 0",
 
             opacity: 0.35,
 
             letterSpacing: "3px",
 
-            fontSize: "13px",
+            fontSize: isMobile
+              ? "11px"
+              : "13px",
           }}
         >
           NO REGISTERED ENTITIES
@@ -109,9 +134,17 @@ export default function Leaderboard() {
               display: "grid",
 
               gridTemplateColumns:
-                "140px 1fr 160px 220px",
+                isMobile
+                  ? "1fr"
+                  : "140px 1fr 160px 220px",
 
-              padding: "24px",
+              gap: isMobile
+                ? "10px"
+                : undefined,
+
+              padding: isMobile
+                ? "18px 0"
+                : "24px",
 
               borderBottom:
                 "1px solid rgba(255,255,255,0.05)",
@@ -124,6 +157,10 @@ export default function Leaderboard() {
                 opacity: 0.4,
 
                 letterSpacing: "2px",
+
+                fontSize: isMobile
+                  ? "11px"
+                  : undefined,
               }}
             >
               #
@@ -134,10 +171,17 @@ export default function Leaderboard() {
 
             <div
               style={{
-                fontSize: "15px",
+                fontSize: isMobile
+                  ? "14px"
+                  : "15px",
 
                 letterSpacing:
-                  "2px",
+                  isMobile
+                    ? "1px"
+                    : "2px",
+
+                wordBreak:
+                  "break-word",
               }}
             >
               {user.name}
@@ -146,6 +190,10 @@ export default function Leaderboard() {
             <div
               style={{
                 opacity: 0.7,
+
+                fontSize: isMobile
+                  ? "13px"
+                  : undefined,
               }}
             >
               {user.score} PTS
@@ -156,7 +204,13 @@ export default function Leaderboard() {
                 opacity: 0.45,
 
                 letterSpacing:
-                  "2px",
+                  isMobile
+                    ? "1px"
+                    : "2px",
+
+                fontSize: isMobile
+                  ? "11px"
+                  : undefined,
               }}
             >
               {user.status}
