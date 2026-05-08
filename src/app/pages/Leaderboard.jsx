@@ -135,15 +135,15 @@ export default function Leaderboard() {
 
               gridTemplateColumns:
                 isMobile
-                  ? "1fr"
+                  ? "70px 1fr auto"
                   : "140px 1fr 160px 220px",
 
               gap: isMobile
-                ? "10px"
-                : undefined,
+                ? "12px"
+                : "0",
 
               padding: isMobile
-                ? "18px 0"
+                ? "18px 12px"
                 : "24px",
 
               borderBottom:
@@ -161,6 +161,8 @@ export default function Leaderboard() {
                 fontSize: isMobile
                   ? "11px"
                   : undefined,
+
+                whiteSpace: "nowrap",
               }}
             >
               #
@@ -172,7 +174,7 @@ export default function Leaderboard() {
             <div
               style={{
                 fontSize: isMobile
-                  ? "14px"
+                  ? "13px"
                   : "15px",
 
                 letterSpacing:
@@ -180,8 +182,13 @@ export default function Leaderboard() {
                     ? "1px"
                     : "2px",
 
-                wordBreak:
-                  "break-word",
+                overflow: "hidden",
+
+                textOverflow:
+                  "ellipsis",
+
+                whiteSpace:
+                  "nowrap",
               }}
             >
               {user.name}
@@ -191,30 +198,30 @@ export default function Leaderboard() {
               style={{
                 opacity: 0.7,
 
+                textAlign: "right",
+
                 fontSize: isMobile
-                  ? "13px"
+                  ? "12px"
                   : undefined,
+
+                whiteSpace: "nowrap",
               }}
             >
               {user.score} PTS
             </div>
 
-            <div
-              style={{
-                opacity: 0.45,
+            {!isMobile && (
+              <div
+                style={{
+                  opacity: 0.45,
 
-                letterSpacing:
-                  isMobile
-                    ? "1px"
-                    : "2px",
-
-                fontSize: isMobile
-                  ? "11px"
-                  : undefined,
-              }}
-            >
-              {user.status}
-            </div>
+                  letterSpacing:
+                    "2px",
+                }}
+              >
+                {user.status}
+              </div>
+            )}
           </div>
         )
       )}
