@@ -1,11 +1,11 @@
 import { NFT_COLLECTIONS } from "../../config/nftConfig";
 import { useAppStore } from "../../store/useAppStore";
 
-import bronzeImg from "../../assets/nfts/bronze.jpg";
-import silverImg from "../../assets/nfts/silver.jpg";
-import goldImg from "../../assets/nfts/gold.jpg";
-import diamondImg from "../../assets/nfts/diamond.jpg";
-import obsidianImg from "../../assets/nfts/obsidian.jpg";
+import bronzeImg from "../../assets/nfts/Bronze.jpg";
+import silverImg from "../../assets/nfts/Silver.jpg";
+import goldImg from "../../assets/nfts/Gold.jpg";
+import diamondImg from "../../assets/nfts/Diamond.jpg";
+import obsidianImg from "../../assets/nfts/Obsidian.jpg";
 
 export default function NFT() {
   const {
@@ -396,9 +396,7 @@ export default function NFT() {
                     opacity: 0.62,
 
                     fontSize:
-                      isMobile
-                        ? "12px"
-                        : "12px",
+                      "12px",
 
                     lineHeight:
                       "1.9",
