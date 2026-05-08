@@ -95,6 +95,10 @@ export default function Sidebar({
     display: "flex",
 
     alignItems: "center",
+
+    minHeight: "52px",
+
+    flexShrink: 0,
   });
 
   return (
@@ -225,7 +229,7 @@ export default function Sidebar({
 
           maxWidth: "320px",
 
-          minHeight: "100vh",
+          height: "100vh",
 
           borderRight:
             "1px solid rgba(255,255,255,0.06)",
@@ -237,7 +241,7 @@ export default function Sidebar({
             "blur(28px)",
 
           padding: isMobile
-            ? "34px 24px"
+            ? "34px 24px 120px"
             : "40px 32px",
 
           position: isMobile
@@ -258,6 +262,11 @@ export default function Sidebar({
           zIndex: 115,
 
           overflowY: "auto",
+
+          overflowX: "hidden",
+
+          WebkitOverflowScrolling:
+            "touch",
 
           boxShadow:
             isMobile
@@ -429,6 +438,8 @@ export default function Sidebar({
             marginTop: "70px",
 
             paddingTop: "30px",
+
+            paddingBottom: "40px",
 
             borderTop:
               "1px solid rgba(255,255,255,0.06)",
