@@ -8,7 +8,7 @@ import SystemLogs from "../components/SystemLogs";
 import Vision from "./pages/Vision";
 import Roadmap from "./pages/Roadmap";
 import HowItWorks from "./pages/HowItWorks";
-import PresenceEngine from "./pages/PresenceEngine";
+import Research from "./pages/Research";
 import Leaderboard from "./pages/Leaderboard";
 import Profile from "./pages/Profile";
 import Forum from "./pages/Forum";
@@ -63,9 +63,9 @@ export default function Dashboard() {
       case "How It Works":
         return <HowItWorks />;
 
-      case "Presence Engine":
+      case "Research":
         return (
-          <PresenceEngine />
+          <Research />
         );
 
       case "Leaderboard":
