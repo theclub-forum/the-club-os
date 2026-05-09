@@ -4,61 +4,147 @@ export default function Roadmap() {
   return (
     <>
       <SystemPanel
-        title="Q1 2026 — Genesis Phase"
-        text={`Core identity infrastructure completed.
+        title="PHASE 01 — Genesis Infrastructure"
+        text={`THE CLUB foundation deployed.
 
-Cinematic onboarding and terminal interface deployed.
+Core platform architecture established.
 
-Persistent profile architecture established.`}
+Cinematic onboarding and terminal identity interface released.
+
+Persistent profile system activated.
+
+Wallet-linked entity framework integrated.
+
+Genesis Keys infrastructure completed.
+
+Early supporter onboarding initiated.
+
+Reputation accumulation systems deployed.
+
+Referral and progression architecture activated.
+
+Foundational database and persistence systems stabilized.
+
+The objective of Phase 01 is simple:
+
+Establish the first generation of persistent digital entities inside THE CLUB ecosystem.`}
       />
 
       <SystemPanel
-        title="Q2 2026 — Reputation Expansion"
-        text={`Genesis Key collection released.
+        title="PHASE 02 — Reputation Network"
+        text={`THE CLUB evolves from static profiles into an active reputation network.
 
-Foundational reputation systems initialized.
+Points become long-term historical reputation signals.
 
-Early operational network brought online.
+Daily continuity systems expand.
 
-Points and progression systems implemented.
+Behavioral persistence tracking research begins.
 
-Persistent entity tracking systems activated.
+Entity progression systems mature.
 
-NFT-linked access architecture integrated.
+Social presence indexing systems enter development.
 
-Backend infrastructure expansion in progress.
+NFT-linked reputation weighting expands.
 
-Governance framework research and preparation underway.`}
+Infrastructure scaling and backend optimization continue.
+
+The platform transitions from onboarding infrastructure into a living identity environment where continuity itself becomes measurable.`}
       />
 
       <SystemPanel
-        title="Q3 2026 — Human Authenticity Protocol (Prototype)"
-        text={`Behavioral signature analysis systems.
+        title="PHASE 03 — Human Authenticity Research"
+        text={`Research and development of the Human Authenticity Protocol begins.
 
-Continuity-based identity research.
+Core focus areas include:
 
-Human interaction pattern indexing.
+Behavioral consistency analysis.
 
-Authenticity verification prototype development.
+Continuity-based identity verification.
 
-AI differentiation framework testing.
+Human interaction pattern recognition.
 
-Persistent trust-layer experimentation.`}
+Long-term presence validation.
+
+Reputation-backed authenticity scoring.
+
+AI-generated behavioral detection research.
+
+Synthetic interaction filtering systems.
+
+Cross-session persistence analysis.
+
+The objective is not traditional verification.
+
+The objective is building systems capable of distinguishing persistent human presence from scalable artificial identity replication.`}
       />
 
       <SystemPanel
-        title="Q4 2026 — Protocol Expansion"
-        text={`TGE and ecosystem expansion phase.
+        title="PHASE 04 — Presence Engine"
+        text={`THE CLUB evolves into a full digital presence infrastructure layer.
 
-Human Authenticity Protocol v1 deployment.
+The Presence Engine becomes the operational core of the ecosystem.
 
-Governance systems activation.
+Identity transforms from static account ownership into evolving historical existence.
 
-Advanced reputation infrastructure rollout.
+Systems under expansion:
 
-Cross-platform identity continuity systems.
+Persistent trust architecture.
 
-Persistent digital presence network expansion.`}
+Cross-platform identity continuity.
+
+Human reputation indexing.
+
+Behavioral authenticity infrastructure.
+
+Entity-based governance systems.
+
+Adaptive reputation scoring.
+
+Long-term participation weighting.
+
+AI resistance mechanisms.
+
+THE CLUB begins establishing a new framework for digital legitimacy in the age of artificial intelligence.`}
+      />
+
+      <SystemPanel
+        title="PHASE 05 — Ecosystem Expansion"
+        text={`Native ecosystem expansion begins.
+
+THE CLUB token infrastructure deployed.
+
+Reputation-backed ecosystem mechanics activated.
+
+Genesis supporters receive ecosystem alignment through future airdrop architecture.
+
+Governance participation systems introduced.
+
+Expanded utility layers integrated into the identity network.
+
+Developer and research ecosystem onboarding begins.
+
+External integrations and interoperability systems expand.
+
+The long-term objective is establishing THE CLUB as foundational infrastructure for persistent human presence online.`}
+      />
+
+      <SystemPanel
+        title="LONG-TERM OBJECTIVE"
+        text={`Artificial intelligence will permanently alter the internet.
+
+Synthetic identities will scale infinitely.
+
+Static verification systems will fail.
+
+THE CLUB is building toward a future where legitimacy is earned through continuity, history, participation and persistent existence.
+
+Our objective is to create infrastructure capable of separating authentic human presence from scalable artificial replication.
+
+Not through single verification moments.
+
+But through evolving reputation, historical persistence and behavioral continuity across time.
+
+THE CLUB is building the foundation for human identity infrastructure in the AI era.`}
       />
     </>
   );

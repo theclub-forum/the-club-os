@@ -8,43 +8,78 @@ export default function Vision() {
       }}
     >
       <SystemPanel
-        title="The AI Identity Crisis"
-        text={`Artificial intelligence is dissolving the boundary between authentic and synthetic digital presence.
+        title="The Human Layer of the Internet"
+        text={`Artificial intelligence is fundamentally changing the structure of the internet.
 
-Images are no longer proof of humanity.
+For the first time in history, non-human entities are becoming capable of imitating human behavior at global scale.
 
-Voice is no longer proof of humanity.
+AI can already generate:
+- text
+- voice
+- images
+- video
+- personality
+- social interaction
+- influence
+- engagement
+- identity
 
-Text is no longer proof of humanity.
+The boundary between human and synthetic presence is collapsing.
 
-Style itself is becoming reproducible.
+Current internet systems were never designed for a world where millions of autonomous AI entities participate alongside humans.
 
-The internet is entering a period where identity can be infinitely simulated, cloned and automated.
+This creates one of the most important technological problems of the coming decades:
 
-THE CLUB exists as a response to this transition.
+How do we distinguish authentic human presence from artificial intelligence?
 
-We are building systems where identity is not static profile data, but something that forms over time through continuity, participation, reputation and persistent behavioral history.`}
+THE CLUB exists to solve this problem.
+
+We are building infrastructure for persistent human identity, decentralized reputation and AI-resistant trust systems.
+
+The goal is not temporary verification.
+
+The goal is building the human layer of the future internet.`}
       />
 
       <div
         style={{
-          height: window.innerWidth <= 900
-            ? "24px"
-            : "32px",
+          height:
+            window.innerWidth <= 900
+              ? "24px"
+              : "32px",
         }}
       />
 
       <SystemPanel
-        title="Persistent Digital Presence"
-        text={`Most systems only verify temporary activity.
+        title="Persistent Identity & Reputation"
+        text={`Most digital systems only verify temporary activity.
 
-We are interested in continuity.
+THE CLUB is focused on continuity.
 
-THE CLUB introduces the idea of persistent digital presence — an evolving identity structure that gains legitimacy through time, interaction and traceable participation.
+We believe identity becomes trustworthy through:
+- time
+- consistency
+- participation
+- reputation
+- behavioral history
+- persistent presence
 
-The objective is not simply proving ownership.
+THE CLUB introduces a new model of digital identity where legitimacy is formed over long-term interaction instead of one-time verification.
 
-The objective is proving historical existence inside digital space.`}
+Every action inside the ecosystem contributes to an evolving reputation layer tied to persistent identity.
+
+This creates:
+- stronger anti-sybil protection
+- long-term trust accumulation
+- AI-resistant participation systems
+- decentralized social credibility
+- reputation-based coordination
+
+The future internet will not rely on anonymous temporary interaction.
+
+It will rely on persistent human reputation systems.
+
+THE CLUB is building the infrastructure for that transition.`}
       />
     </div>
   );

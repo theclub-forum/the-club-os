@@ -4,52 +4,58 @@ export default function HowItWorks() {
   return (
     <>
       <SystemPanel
-        title="Identity Formation"
-        text={`Traditional internet systems reduce identity to static profile data.
+        title="Persistent Identity"
+        text={`Traditional internet identity systems are static.
 
 A username.
 
 A profile image.
 
-A follower count.
+A verification badge.
 
-These structures no longer represent authentic digital existence.
+These structures no longer represent authentic existence in an AI-dominated internet.
 
-THE CLUB explores a different direction.
+THE CLUB introduces a different model.
 
-Identity is treated as a continuously evolving structure formed through participation, continuity, behavioral patterns and historical interaction.`}
+Identity becomes persistent.
+
+It forms gradually through historical participation, behavioral continuity, contribution and long-term interaction inside the network.
+
+The longer authentic presence persists, the stronger the identity becomes.`}
       />
 
       <SystemPanel
-        title="Point Economy"
-        text={`Points are not simple gamification rewards.
+        title="Reputation Infrastructure"
+        text={`Points are not simple rewards.
 
-They represent persistent contribution.
+They represent measurable historical participation.
 
-Every action modifies identity weight inside the system.
+Every interaction contributes to an evolving reputation structure tied to continuity and contribution inside the ecosystem.
 
-Connecting identity.
+The system is designed to reward persistence rather than short-term engagement.
 
-Participating in future quests.
-
-Contributing to discussions.
-
-Maintaining continuity through time.
-
-The objective is not short-term engagement.
-
-The objective is long-term digital legitimacy.`}
+Over time, users establish provable digital legitimacy through accumulated historical presence.`}
       />
 
       <SystemPanel
-        title="Reputation Layer"
-        text={`The leaderboard is not merely competitive ranking.
+        title="Human Authenticity Layer"
+        text={`THE CLUB is building toward a future authenticity infrastructure capable of distinguishing between human presence and synthetic activity.
 
-It functions as a visible continuity structure.
+This includes research into:
 
-Over time, persistent users accumulate historical presence inside the system.
+Behavioral consistency.
 
-This creates a new type of digital reputation based not only on visibility, but on consistency and traceable participation.`}
+Participation continuity.
+
+Interaction patterns.
+
+Long-term reputation structures.
+
+Historical authenticity indexing.
+
+The objective is creating systems where trust is formed organically through provable continuity rather than temporary verification mechanisms.
+
+This infrastructure becomes increasingly critical as artificial intelligence continues to blur the boundary between real and synthetic digital existence.`}
       />
     </>
   );
