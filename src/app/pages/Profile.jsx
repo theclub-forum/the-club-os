@@ -66,18 +66,16 @@ export default function Profile() {
       if (!address) return;
 
       try {
-        const params =
-          new URLSearchParams(
-            window.location.search
+        // LOAD REFERRAL FROM LOCAL STORAGE
+        const savedReferral =
+          localStorage.getItem(
+            "theclub_referral"
           );
-
-        const referralCodeFromUrl =
-          params.get("ref");
 
         const result =
           await createOrLoadUser(
             address,
-            referralCodeFromUrl
+            savedReferral
           );
 
         if (!result) return;
@@ -107,6 +105,7 @@ export default function Profile() {
             ""
         );
 
+        // LOAD INVITED USERS
         const { data: invited } =
           await supabase
             .from("users")
@@ -120,25 +119,26 @@ export default function Profile() {
           invited || []
         );
 
+        // CALCULATE REFERRAL EARNINGS
         let earnings = 0;
 
         if (invited) {
           invited.forEach(
             (user) => {
-              earnings +=
+              earnings += Math.floor(
                 Number(
                   user.points || 0
-                ) * 0.3;
+                ) * 0.3
+              );
             }
           );
         }
 
         setReferralEarnings(
-          Math.floor(
-            earnings
-          )
+          earnings
         );
 
+        // LOAD NFTS
         const owned =
           await checkNFTs(
             address
@@ -154,6 +154,17 @@ export default function Profile() {
           )
         );
 
+        // CLEAR REFERRAL AFTER SUCCESSFUL ACCOUNT CREATION
+        if (
+          isNew &&
+          savedReferral
+        ) {
+          localStorage.removeItem(
+            "theclub_referral"
+          );
+        }
+
+        // ACTIVATION ANIMATION
         if (isNew) {
           setShowActivation(
             true

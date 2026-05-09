@@ -1,6 +1,32 @@
-export default function GateScreen({ onEnter }) {
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function GateScreen() {
   const isMobile =
     window.innerWidth <= 900;
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const ref =
+      params.get("ref");
+
+    if (ref) {
+      localStorage.setItem(
+        "theclub_referral",
+        ref
+      );
+    }
+  }, []);
+
+  const handleEnter = () => {
+    navigate("/app");
+  };
 
   return (
     <div
@@ -81,7 +107,7 @@ export default function GateScreen({ onEnter }) {
       </div>
 
       <button
-        onClick={onEnter}
+        onClick={handleEnter}
         style={{
           background:
             "rgba(255,255,255,0.06)",

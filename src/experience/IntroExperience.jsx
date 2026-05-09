@@ -46,6 +46,22 @@ export default function IntroExperience() {
         duration: 2,
       }
     );
+
+    // SAVE REFERRAL CODE
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const ref =
+      params.get("ref");
+
+    if (ref) {
+      localStorage.setItem(
+        "theclub_referral",
+        ref
+      );
+    }
   }, []);
 
   const triggerTransition = () => {
@@ -135,9 +151,9 @@ export default function IntroExperience() {
   if (booting) {
     return (
       <BootSequence
-        onComplete={() =>
-          navigate("/app")
-        }
+        onComplete={() => {
+          navigate("/app");
+        }}
       />
     );
   }
