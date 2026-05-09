@@ -46,18 +46,14 @@ export async function claimDailyRewards({
 
   const now = Date.now();
 
-  const {
-    data: user,
-    error,
-  } = await supabase
-    .from("users")
-    .select("*")
-    .eq("wallet", wallet)
-    .single();
+  const { data: user } =
+    await supabase
+      .from("users")
+      .select("*")
+      .eq("wallet", wallet)
+      .single();
 
-  if (error || !user) {
-    console.log(error);
-
+  if (!user) {
     return {
       success: false,
     };
@@ -65,7 +61,7 @@ export async function claimDailyRewards({
 
   const lastClaim =
     Number(
-      user.last_claim || 0
+      user.nft_last_claim || 0
     );
 
   const cooldown =
@@ -88,20 +84,12 @@ export async function claimDailyRewards({
       reward
     );
 
-  const {
-    error: updateError,
-  } = await supabase
+  await supabase
     .from("users")
     .update({
-      last_claim: now,
+      nft_last_claim: now,
     })
     .eq("wallet", wallet);
-
-  if (updateError) {
-    console.log(
-      updateError
-    );
-  }
 
   return {
     success: true,
