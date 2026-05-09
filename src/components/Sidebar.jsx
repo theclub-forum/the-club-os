@@ -38,7 +38,7 @@ export default function Sidebar({
     "Vision",
     "Roadmap",
     "How It Works",
-    "Presence Engine",
+    "Research",
   ];
 
   const mainItems = [
