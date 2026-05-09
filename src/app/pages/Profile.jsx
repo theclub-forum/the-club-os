@@ -56,6 +56,9 @@ export default function Profile() {
   const [dailyAmount, setDailyAmount] =
     useState(0);
 
+  const [rewardCooldown, setRewardCooldown] =
+    useState(null);
+
   const [
     showActivation,
     setShowActivation,
@@ -154,6 +157,36 @@ export default function Profile() {
           )
         );
 
+        // LOAD NFT CLAIM COOLDOWN
+        if (user.nft_last_claim) {
+          const lastClaim =
+            new Date(
+              user.nft_last_claim
+            ).getTime();
+
+          const now =
+            Date.now();
+
+          const cooldown =
+            24 *
+            60 *
+            60 *
+            1000;
+
+          const remaining =
+            cooldown -
+            (now -
+              lastClaim);
+
+          if (
+            remaining > 0
+          ) {
+            setRewardCooldown(
+              remaining
+            );
+          }
+        }
+
         // CLEAR REFERRAL AFTER SUCCESSFUL ACCOUNT CREATION
         if (
           isNew &&
@@ -201,17 +234,29 @@ export default function Profile() {
           result.newPoints
         );
 
+        setRewardCooldown(
+          24 *
+            60 *
+            60 *
+            1000
+        );
+
         alert(
           `+${result.reward} reputation added`
         );
       } else {
         if (result.cooldown) {
-          const hours = Math.ceil(
-            result.cooldown /
-              1000 /
-              60 /
-              60
+          setRewardCooldown(
+            result.cooldown
           );
+
+          const hours =
+            Math.ceil(
+              result.cooldown /
+                1000 /
+                60 /
+                60
+            );
 
           alert(
             `Daily rewards available in ${hours}h`
@@ -582,11 +627,22 @@ export default function Profile() {
                   handleClaim
                 }
                 disabled={
-                  claiming
+                  claiming ||
+                  rewardCooldown
                 }
                 className="mint-button"
                 style={{
                   width: "100%",
+
+                  opacity:
+                    rewardCooldown
+                      ? 0.4
+                      : 1,
+
+                  cursor:
+                    rewardCooldown
+                      ? "not-allowed"
+                      : "pointer",
 
                   fontSize:
                     isMobile
@@ -601,6 +657,8 @@ export default function Profile() {
               >
                 {claiming
                   ? "PROCESSING..."
+                  : rewardCooldown
+                  ? "COOLDOWN"
                   : `CLAIM +${dailyAmount} PTS`}
               </button>
             </div>
