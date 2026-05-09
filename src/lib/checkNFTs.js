@@ -1,10 +1,11 @@
-import { createPublicClient,
-  http } from "viem";
+import {
+  createPublicClient,
+  http,
+} from "viem";
 
 import { base } from "viem/chains";
 
-import { NFT_COLLECTIONS }
-  from "../config/nftConfig";
+import { NFT_COLLECTIONS } from "../config/nftConfig";
 
 const erc721Abi = [
   {
@@ -53,7 +54,7 @@ export async function checkNFTs(
       const balance =
         await client.readContract({
           address:
-            nft.address,
+            nft.contract,
 
           abi: erc721Abi,
 
