@@ -7,7 +7,12 @@ async function propagateReferralRewards(
 ) {
   if (!wallet) return;
 
-  if (depth > 10) return;
+  // ONLY 2 LEVELS
+  // depth 0 = direct referral (30%)
+  // depth 1 = indirect referral (10%)
+  // depth 2+ = stop
+
+  if (depth > 1) return;
 
   const { data: user } =
     await supabase
@@ -27,7 +32,7 @@ async function propagateReferralRewards(
     depth === 0 ? 0.3 : 0.1;
 
   const reward = Math.floor(
-    amount * percentage
+    Number(amount) * percentage
   );
 
   if (reward <= 0) return;
@@ -54,6 +59,7 @@ async function propagateReferralRewards(
     })
     .eq("wallet", referrer);
 
+  // propagate upward
   await propagateReferralRewards(
     referrer,
     amount,
@@ -67,6 +73,16 @@ export async function awardPoints(
 ) {
   if (!wallet) return;
 
+  const numericAmount =
+    Number(amount);
+
+  if (
+    isNaN(numericAmount) ||
+    numericAmount <= 0
+  ) {
+    return;
+  }
+
   const { data: user } =
     await supabase
       .from("users")
@@ -78,7 +94,7 @@ export async function awardPoints(
 
   const updatedPoints =
     Number(user.points || 0) +
-    Number(amount);
+    numericAmount;
 
   await supabase
     .from("users")
@@ -87,9 +103,10 @@ export async function awardPoints(
     })
     .eq("wallet", wallet);
 
+  // referral rewards
   await propagateReferralRewards(
     wallet,
-    amount
+    numericAmount
   );
 
   return updatedPoints;
