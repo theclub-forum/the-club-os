@@ -7,26 +7,19 @@ async function propagateReferralRewards(
 ) {
   if (!wallet) return;
 
-  // ONLY 2 LEVELS
   // depth 0 = direct referral (30%)
   // depth 1 = indirect referral (10%)
-  // depth 2+ = stop
 
   if (depth > 1) return;
 
   const { data: user } =
     await supabase
       .from("users")
-      .select("*")
+      .select("referrer")
       .eq("wallet", wallet)
       .single();
 
-  if (!user) return;
-
-  const referrer =
-    user.referrer;
-
-  if (!referrer) return;
+  if (!user?.referrer) return;
 
   const percentage =
     depth === 0 ? 0.3 : 0.1;
@@ -41,8 +34,8 @@ async function propagateReferralRewards(
     data: referrerUser,
   } = await supabase
     .from("users")
-    .select("*")
-    .eq("wallet", referrer)
+    .select("points")
+    .eq("wallet", user.referrer)
     .single();
 
   if (!referrerUser) return;
@@ -57,11 +50,13 @@ async function propagateReferralRewards(
     .update({
       points: updatedPoints,
     })
-    .eq("wallet", referrer);
+    .eq(
+      "wallet",
+      user.referrer
+    );
 
-  // propagate upward
   await propagateReferralRewards(
-    referrer,
+    user.referrer,
     amount,
     depth + 1
   );
@@ -69,7 +64,8 @@ async function propagateReferralRewards(
 
 export async function awardPoints(
   wallet,
-  amount
+  amount,
+  options = {}
 ) {
   if (!wallet) return;
 
@@ -83,6 +79,11 @@ export async function awardPoints(
     return;
   }
 
+  const {
+    questId = null,
+    skipReferral = false,
+  } = options;
+
   const { data: user } =
     await supabase
       .from("users")
@@ -92,22 +93,53 @@ export async function awardPoints(
 
   if (!user) return;
 
+  const completedQuests =
+    user.completed_quests ||
+    {};
+
+  // PREVENT DUPLICATE QUEST CLAIMS
+
+  if (
+    questId &&
+    completedQuests[questId]
+  ) {
+    return Number(
+      user.points || 0
+    );
+  }
+
   const updatedPoints =
     Number(user.points || 0) +
     numericAmount;
 
+  const updatePayload = {
+    points: updatedPoints,
+  };
+
+  // AUTO MARK QUEST COMPLETE
+
+  if (questId) {
+    updatePayload.completed_quests =
+      {
+        ...completedQuests,
+
+        [questId]: true,
+      };
+  }
+
   await supabase
     .from("users")
-    .update({
-      points: updatedPoints,
-    })
+    .update(updatePayload)
     .eq("wallet", wallet);
 
-  // referral rewards
-  await propagateReferralRewards(
-    wallet,
-    numericAmount
-  );
+  // REFERRAL REWARDS
+
+  if (!skipReferral) {
+    await propagateReferralRewards(
+      wallet,
+      numericAmount
+    );
+  }
 
   return updatedPoints;
 }

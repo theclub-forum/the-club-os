@@ -1,7 +1,11 @@
 import { useAppStore } from "../store/appStore";
 
 export default function SystemLogs() {
-  const { logs } = useAppStore();
+  const logs =
+    useAppStore(
+      (state) =>
+        state.logs || []
+    );
 
   const isMobile =
     window.innerWidth <= 900;
@@ -29,7 +33,7 @@ export default function SystemLogs() {
         borderRadius:
           isMobile
             ? "24px"
-            : "0px",
+            : "28px",
 
         overflow: "hidden",
       }}
@@ -54,6 +58,24 @@ export default function SystemLogs() {
         SYSTEM LOGS
       </div>
 
+      {logs.length === 0 && (
+        <div
+          style={{
+            opacity: 0.35,
+
+            fontSize:
+              isMobile
+                ? "12px"
+                : "13px",
+
+            letterSpacing:
+              "1px",
+          }}
+        >
+          No system activity detected.
+        </div>
+      )}
+
       {logs.map((log, index) => (
         <div
           key={index}
@@ -63,7 +85,10 @@ export default function SystemLogs() {
               : "14px 0",
 
             borderBottom:
-              "1px solid rgba(255,255,255,0.04)",
+              index !==
+              logs.length - 1
+                ? "1px solid rgba(255,255,255,0.04)"
+                : "none",
 
             fontSize: isMobile
               ? "12px"

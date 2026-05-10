@@ -19,6 +19,8 @@ export const useAppStore =
 
     invitedUsers: [],
 
+    completedQuests: {},
+
     setWallet: (wallet) =>
       set({ wallet }),
 
@@ -65,5 +67,12 @@ export const useAppStore =
     ) =>
       set({
         invitedUsers,
+      }),
+
+    setCompletedQuests: (
+      completedQuests
+    ) =>
+      set({
+        completedQuests,
       }),
   }));

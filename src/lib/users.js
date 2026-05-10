@@ -65,7 +65,11 @@ export async function createOrLoadUser(
         referralCode
       );
 
-    if (referringUser) {
+    if (
+      referringUser &&
+      referringUser.wallet !==
+        wallet
+    ) {
       referrer =
         referringUser.wallet;
     }
@@ -75,6 +79,42 @@ export async function createOrLoadUser(
     generateReferralCode(
       wallet
     );
+
+  const starterQuests = {
+    daily: false,
+
+    name: false,
+
+    farcaster_follow:
+      false,
+
+    farcaster_like:
+      false,
+
+    farcaster_recast:
+      false,
+
+    farcaster_reply:
+      false,
+
+    twitter_follow:
+      false,
+
+    twitter_like:
+      false,
+
+    twitter_repost:
+      false,
+
+    twitter_comment:
+      false,
+
+    worldview_one:
+      false,
+
+    worldview_two:
+      false,
+  };
 
   const { data, error } =
     await supabase
@@ -86,6 +126,7 @@ export async function createOrLoadUser(
           username:
             "Unnamed Entity",
 
+          // wallet connect starter bonus
           points: 100,
 
           role: "Visitor",
@@ -94,6 +135,9 @@ export async function createOrLoadUser(
             generatedCode,
 
           referrer,
+
+          completed_quests:
+            starterQuests,
         },
       ])
       .select()
@@ -115,11 +159,22 @@ export async function updateUsername(
   wallet,
   username
 ) {
+  const cleanUsername =
+    username.trim();
+
+  if (
+    !wallet ||
+    !cleanUsername
+  ) {
+    return;
+  }
+
   const { error } =
     await supabase
       .from("users")
       .update({
-        username,
+        username:
+          cleanUsername,
       })
       .eq("wallet", wallet);
 

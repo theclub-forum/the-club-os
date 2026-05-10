@@ -6,9 +6,7 @@ import { useAppStore } from "../../store/useAppStore";
 
 import ActivationOverlay from "../../components/ActivationOverlay";
 
-import {
-  supabase,
-} from "../../lib/supabase";
+import { supabase } from "../../lib/supabase";
 
 import { awardPoints } from "../../lib/awardPoints";
 
@@ -20,7 +18,6 @@ export default function Quests() {
     username,
     points,
     role,
-
     setPoints,
   } = useAppStore();
 
@@ -40,22 +37,173 @@ export default function Quests() {
   ] = useState(false);
 
   const [
-    quests,
-    setQuests,
-  ] = useState({
-    connect: false,
-    daily: false,
-    name: false,
-  });
-
-  const [
     claimed,
     setClaimed,
-  ] = useState({
-    connect: false,
-    daily: false,
-    name: false,
-  });
+  ] = useState({});
+
+  const [
+    quests,
+    setQuests,
+  ] = useState({});
+
+  const [
+    selectedAnswers,
+    setSelectedAnswers,
+  ] = useState({});
+
+  const questList = [
+    {
+      id: "daily",
+      title:
+        "DAILY CHECK-IN",
+      reward: 10,
+      category:
+        "CONTINUITY",
+      description:
+        "Maintain persistent presence inside the network.",
+    },
+
+    {
+      id: "name",
+      title:
+        "SET IDENTITY NAME",
+      reward: 20,
+      category:
+        "IDENTITY",
+      description:
+        "Initialize your persistent identity layer.",
+    },
+
+    {
+      id: "fc_follow",
+      title:
+        "FOLLOW ON FARCASTER",
+      reward: 30,
+      category:
+        "SOCIAL",
+      description:
+        "Join the continuity network on Farcaster.",
+      link: "https://farcaster.xyz/theclub",
+    },
+
+    {
+      id: "fc_like",
+      title:
+        "LIKE OFFICIAL CAST",
+      reward: 15,
+      category:
+        "SOCIAL",
+      description:
+        "Signal support through interaction.",
+      link: "https://farcaster.xyz/theclub",
+    },
+
+    {
+      id: "fc_recast",
+      title:
+        "RECAST OFFICIAL CAST",
+      reward: 40,
+      category:
+        "SOCIAL",
+      description:
+        "Expand persistent visibility across the network.",
+      link: "https://farcaster.xyz/theclub",
+    },
+
+    {
+      id: "fc_reply",
+      title:
+        "REPLY TO OFFICIAL CAST",
+      reward: 50,
+      category:
+        "SOCIAL",
+      description:
+        "Participate in continuity discussions.",
+      link: "https://farcaster.xyz/theclub",
+    },
+
+    {
+      id: "x_follow",
+      title:
+        "FOLLOW ON X",
+      reward: 25,
+      category:
+        "SOCIAL",
+      description:
+        "Extend identity continuity across platforms.",
+      link: "https://x.com/theclubprotocol",
+    },
+
+    {
+      id: "x_like",
+      title:
+        "LIKE OFFICIAL POST",
+      reward: 10,
+      category:
+        "SOCIAL",
+      description:
+        "Support protocol visibility.",
+      link: "https://x.com/theclubprotocol",
+    },
+
+    {
+      id: "x_repost",
+      title:
+        "REPOST OFFICIAL POST",
+      reward: 35,
+      category:
+        "SOCIAL",
+      description:
+        "Distribute continuity narratives.",
+      link: "https://x.com/theclubprotocol",
+    },
+
+    {
+      id: "x_comment",
+      title:
+        "COMMENT ON OFFICIAL POST",
+      reward: 45,
+      category:
+        "SOCIAL",
+      description:
+        "Create persistent interaction signals.",
+      link: "https://x.com/theclubprotocol",
+    },
+
+    {
+      id: "quiz_identity",
+      title:
+        "WHAT DEFINES REAL IDENTITY?",
+      reward: 40,
+      category:
+        "RESEARCH",
+      description:
+        "Choose the continuity principle you align with.",
+      options: [
+        "Follower count",
+        "Persistent reputation",
+        "Anonymous virality",
+        "Pure automation",
+      ],
+    },
+
+    {
+      id: "quiz_ai",
+      title:
+        "HOW WILL HUMANS STAY DISTINCT FROM AI?",
+      reward: 40,
+      category:
+        "RESEARCH",
+      description:
+        "Select the strongest long-term signal.",
+      options: [
+        "Infinite content",
+        "Verified continuity",
+        "Faster posting",
+        "Anonymous scaling",
+      ],
+    },
+  ];
 
   useEffect(() => {
     async function loadQuestState() {
@@ -73,6 +221,29 @@ export default function Quests() {
       const completed =
         user.completed_quests ||
         {};
+
+      setClaimed(completed);
+
+      const available = {};
+
+      questList.forEach(
+        (quest) => {
+          available[
+            quest.id
+          ] = true;
+        }
+      );
+
+      if (
+        !username ||
+        username ===
+          "Unnamed Entity"
+      ) {
+        available.name =
+          false;
+      }
+
+      setQuests(available);
 
       const lastDaily =
         user.daily_claim_at;
@@ -103,41 +274,6 @@ export default function Quests() {
       setDailyCooldown(
         !dailyReady
       );
-
-      setClaimed({
-        connect:
-          completed.connect ||
-          false,
-
-        daily: false,
-
-        name:
-          completed.name ||
-          false,
-      });
-
-      if (address) {
-        setQuests((prev) => ({
-          ...prev,
-          connect: true,
-        }));
-      }
-
-      if (
-        username &&
-        username !==
-          "Unnamed Entity"
-      ) {
-        setQuests((prev) => ({
-          ...prev,
-          name: true,
-        }));
-      }
-
-      setQuests((prev) => ({
-        ...prev,
-        daily: true,
-      }));
     }
 
     loadQuestState();
@@ -152,14 +288,16 @@ export default function Quests() {
     if (
       type === "daily" &&
       dailyCooldown
-    )
+    ) {
       return;
+    }
 
     if (
       type !== "daily" &&
       claimed[type]
-    )
+    ) {
       return;
+    }
 
     try {
       const updatedPoints =
@@ -168,22 +306,24 @@ export default function Quests() {
           amount
         );
 
-      const newClaimed = {
-        ...claimed,
-      };
+      const updatedClaimed =
+        {
+          ...claimed,
+        };
 
       if (
         type !== "daily"
       ) {
-        newClaimed[type] =
-          true;
+        updatedClaimed[
+          type
+        ] = true;
       }
 
       await supabase
         .from("users")
         .update({
           completed_quests:
-            newClaimed,
+            updatedClaimed,
 
           daily_claim_at:
             type === "daily"
@@ -197,7 +337,7 @@ export default function Quests() {
       );
 
       setClaimed(
-        newClaimed
+        updatedClaimed
       );
 
       if (
@@ -225,20 +365,20 @@ export default function Quests() {
   }
 
   function renderStatus(
-    type,
-    amount
+    quest
   ) {
     if (
-      type === "daily" &&
+      quest.id ===
+        "daily" &&
       dailyCooldown
     ) {
       return (
         <div
           style={{
-            opacity: 0.4,
-
+            opacity: 0.35,
             letterSpacing:
               "2px",
+            fontSize: "11px",
           }}
         >
           COOLDOWN
@@ -246,14 +386,16 @@ export default function Quests() {
       );
     }
 
-    if (claimed[type]) {
+    if (
+      claimed[quest.id]
+    ) {
       return (
         <div
           style={{
-            opacity: 0.4,
-
+            opacity: 0.35,
             letterSpacing:
               "2px",
+            fontSize: "11px",
           }}
         >
           COMPLETED
@@ -261,29 +403,296 @@ export default function Quests() {
       );
     }
 
-    if (quests[type]) {
-      return (
-        <button
-          onClick={() =>
-            rewardQuest(
-              type,
-              amount
-            )
-          }
-          className="mint-button"
-        >
-          COLLECT
-        </button>
-      );
-    }
+    const requiresAnswer =
+      quest.options;
+
+    const hasAnswer =
+      selectedAnswers[
+        quest.id
+      ];
 
     return (
       <div
         style={{
-          opacity: 0.4,
+          display: "flex",
+          gap: "12px",
+          alignItems:
+            "center",
+          flexWrap: "wrap",
+          justifyContent:
+            "flex-end",
         }}
       >
-        INACTIVE
+        {quest.link && (
+          <button
+            onClick={() =>
+              window.open(
+                quest.link,
+                "_blank"
+              )
+            }
+            className="mint-button"
+            style={{
+              opacity: 0.7,
+              width: "140px",
+              marginTop: 0,
+            }}
+          >
+            OPEN
+          </button>
+        )}
+
+        <button
+          disabled={
+            requiresAnswer &&
+            !hasAnswer
+          }
+          onClick={() =>
+            rewardQuest(
+              quest.id,
+              quest.reward
+            )
+          }
+          className="mint-button"
+          style={{
+            width: "140px",
+            marginTop: 0,
+
+            opacity:
+              requiresAnswer &&
+              !hasAnswer
+                ? 0.35
+                : 1,
+
+            cursor:
+              requiresAnswer &&
+              !hasAnswer
+                ? "not-allowed"
+                : "pointer",
+          }}
+        >
+          COLLECT
+        </button>
+      </div>
+    );
+  }
+
+  function renderSection(
+    category
+  ) {
+    const filtered =
+      questList.filter(
+        (quest) =>
+          quest.category ===
+          category
+      );
+
+    return (
+      <div
+        style={{
+          marginBottom:
+            "56px",
+        }}
+      >
+        <div
+          className="section-label"
+          style={{
+            marginBottom:
+              "26px",
+          }}
+        >
+          {category}
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gap: "22px",
+          }}
+        >
+          {filtered.map(
+            (quest) => (
+              <div
+                key={quest.id}
+                className="terminal-card"
+              >
+                <div
+                  style={{
+                    display:
+                      "flex",
+
+                    justifyContent:
+                      "space-between",
+
+                    alignItems:
+                      "flex-start",
+
+                    gap: "20px",
+
+                    flexWrap:
+                      "wrap",
+                  }}
+                >
+                  <div
+                    style={{
+                      flex: 1,
+                      minWidth:
+                        "240px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize:
+                          "18px",
+
+                        marginBottom:
+                          "10px",
+
+                        letterSpacing:
+                          "1px",
+                      }}
+                    >
+                      {
+                        quest.title
+                      }
+                    </div>
+
+                    <div
+                      style={{
+                        opacity: 0.5,
+
+                        fontSize:
+                          "13px",
+
+                        lineHeight:
+                          "1.8",
+
+                        marginBottom:
+                          "16px",
+                      }}
+                    >
+                      {
+                        quest.description
+                      }
+                    </div>
+
+                    {quest.options && (
+                      <div
+                        style={{
+                          display:
+                            "grid",
+
+                          gap: "12px",
+
+                          marginBottom:
+                            "18px",
+                        }}
+                      >
+                        {quest.options.map(
+                          (
+                            option
+                          ) => (
+                            <button
+                              key={
+                                option
+                              }
+                              onClick={() =>
+                                setSelectedAnswers(
+                                  (
+                                    prev
+                                  ) => ({
+                                    ...prev,
+                                    [quest.id]:
+                                      option,
+                                  })
+                                )
+                              }
+                              style={{
+                                width:
+                                  "100%",
+
+                                textAlign:
+                                  "left",
+
+                                padding:
+                                  "14px 18px",
+
+                                borderRadius:
+                                  "16px",
+
+                                border:
+                                  selectedAnswers[
+                                    quest
+                                      .id
+                                  ] ===
+                                  option
+                                    ? "1px solid rgba(255,255,255,0.24)"
+                                    : "1px solid rgba(255,255,255,0.08)",
+
+                                background:
+                                  selectedAnswers[
+                                    quest
+                                      .id
+                                  ] ===
+                                  option
+                                    ? "rgba(255,255,255,0.08)"
+                                    : "rgba(255,255,255,0.03)",
+
+                                color:
+                                  "white",
+
+                                fontSize:
+                                  "13px",
+
+                                letterSpacing:
+                                  "0.5px",
+
+                                cursor:
+                                  "pointer",
+
+                                transition:
+                                  "0.25s ease",
+                              }}
+                            >
+                              {
+                                option
+                              }
+                            </button>
+                          )
+                        )}
+                      </div>
+                    )}
+
+                    <div
+                      style={{
+                        opacity: 0.35,
+
+                        letterSpacing:
+                          "2px",
+
+                        fontSize:
+                          "11px",
+
+                        textTransform:
+                          "uppercase",
+                      }}
+                    >
+                      Reward +
+                      {
+                        quest.reward
+                      }{" "}
+                      Reputation
+                    </div>
+                  </div>
+
+                  {renderStatus(
+                    quest
+                  )}
+                </div>
+              </div>
+            )
+          )}
+        </div>
       </div>
     );
   }
@@ -301,16 +710,23 @@ export default function Quests() {
         </div>
 
         <h1 className="page-title">
-          Operational Tasks
+          Reputation Operations
         </h1>
 
-        <div className="terminal-card">
+        <div
+          className="terminal-card"
+          style={{
+            marginBottom:
+              "60px",
+          }}
+        >
           <div
             style={{
               display: "flex",
               justifyContent:
                 "space-between",
-              padding: "18px 0",
+              padding:
+                "18px 0",
               borderBottom:
                 "1px solid rgba(255,255,255,0.06)",
             }}
@@ -320,7 +736,8 @@ export default function Quests() {
                 opacity: 0.5,
                 letterSpacing:
                   "2px",
-                fontSize: "12px",
+                fontSize:
+                  "12px",
               }}
             >
               ENTITY
@@ -336,7 +753,8 @@ export default function Quests() {
               display: "flex",
               justifyContent:
                 "space-between",
-              padding: "18px 0",
+              padding:
+                "18px 0",
               borderBottom:
                 "1px solid rgba(255,255,255,0.06)",
             }}
@@ -346,7 +764,8 @@ export default function Quests() {
                 opacity: 0.5,
                 letterSpacing:
                   "2px",
-                fontSize: "12px",
+                fontSize:
+                  "12px",
               }}
             >
               RANK
@@ -362,7 +781,8 @@ export default function Quests() {
               display: "flex",
               justifyContent:
                 "space-between",
-              padding: "18px 0",
+              padding:
+                "18px 0",
             }}
           >
             <span
@@ -370,7 +790,8 @@ export default function Quests() {
                 opacity: 0.5,
                 letterSpacing:
                   "2px",
-                fontSize: "12px",
+                fontSize:
+                  "12px",
               }}
             >
               REPUTATION
@@ -382,155 +803,21 @@ export default function Quests() {
           </div>
         </div>
 
-        <div
-          style={{
-            marginTop: "50px",
-          }}
-        >
-          <div
-            className="section-label"
-            style={{
-              marginBottom: "34px",
-            }}
-          >
-            ACTIVE QUESTS
-          </div>
+        {renderSection(
+          "CONTINUITY"
+        )}
 
-          <div
-            className="terminal-card"
-            style={{
-              marginBottom:
-                "24px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                alignItems:
-                  "center",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize:
-                      "18px",
-                    marginBottom:
-                      "8px",
-                  }}
-                >
-                  CONNECT WALLET
-                </div>
+        {renderSection(
+          "IDENTITY"
+        )}
 
-                <div
-                  style={{
-                    opacity: 0.5,
-                    fontSize:
-                      "13px",
-                  }}
-                >
-                  Reward:
-                  +100 Reputation
-                </div>
-              </div>
+        {renderSection(
+          "SOCIAL"
+        )}
 
-              {renderStatus(
-                "connect",
-                100
-              )}
-            </div>
-          </div>
-
-          <div
-            className="terminal-card"
-            style={{
-              marginBottom:
-                "24px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                alignItems:
-                  "center",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize:
-                      "18px",
-                    marginBottom:
-                      "8px",
-                  }}
-                >
-                  DAILY CHECK-IN
-                </div>
-
-                <div
-                  style={{
-                    opacity: 0.5,
-                    fontSize:
-                      "13px",
-                  }}
-                >
-                  Reward:
-                  +10 Reputation
-                </div>
-              </div>
-
-              {renderStatus(
-                "daily",
-                10
-              )}
-            </div>
-          </div>
-
-          <div className="terminal-card">
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                alignItems:
-                  "center",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize:
-                      "18px",
-                    marginBottom:
-                      "8px",
-                  }}
-                >
-                  CHANGE NAME
-                </div>
-
-                <div
-                  style={{
-                    opacity: 0.5,
-                    fontSize:
-                      "13px",
-                  }}
-                >
-                  Reward:
-                  +20 Reputation
-                </div>
-              </div>
-
-              {renderStatus(
-                "name",
-                20
-              )}
-            </div>
-          </div>
-        </div>
+        {renderSection(
+          "RESEARCH"
+        )}
       </div>
     </>
   );
