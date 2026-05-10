@@ -56,6 +56,13 @@ export default function Quests() {
     setErrorMessage,
   ] = useState("");
 
+  // FINAL FIX
+  const hasCustomUsername =
+    username &&
+    username.trim() !== "" &&
+    username !==
+      "Unnamed Entity";
+
   const questList = [
     {
       id: "daily",
@@ -312,14 +319,13 @@ export default function Quests() {
       return;
     }
 
-    // NAME QUEST FIX
+    // FINAL NAME QUEST FIX
     if (
       type === "name" &&
-      (!username ||
-        username.trim() === "")
+      !hasCustomUsername
     ) {
       setErrorMessage(
-        "SET USERNAME FIRST"
+        "SET CUSTOM USERNAME FIRST"
       );
 
       setTimeout(() => {
