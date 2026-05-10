@@ -393,6 +393,15 @@ export default function Quests() {
     }
 
     try {
+
+      if (
+        quest.correctAnswer &&
+        selectedAnswers[type] !==
+          quest.correctAnswer
+      ) {
+        return;
+      }
+
       const updatedPoints =
         await awardPoints(
           address,
@@ -452,6 +461,7 @@ export default function Quests() {
           false
         );
       }, 2500);
+
     } catch (err) {
       console.log(err);
     }
