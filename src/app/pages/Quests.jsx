@@ -312,6 +312,25 @@ export default function Quests() {
       return;
     }
 
+    // NAME QUEST FIX
+    if (
+      type === "name" &&
+      (!username ||
+        username.trim() === "")
+    ) {
+      setErrorMessage(
+        "SET USERNAME FIRST"
+      );
+
+      setTimeout(() => {
+        setErrorMessage(
+          ""
+        );
+      }, 3000);
+
+      return;
+    }
+
     if (
       type !== "daily" &&
       claimed[type]
@@ -393,7 +412,6 @@ export default function Quests() {
     }
 
     try {
-
       if (
         quest.correctAnswer &&
         selectedAnswers[type] !==
