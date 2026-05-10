@@ -19,7 +19,7 @@ import { useAppStore } from "../store/appStore";
 
 export default function Dashboard() {
   const [active, setActive] =
-    useState("Vision");
+    useState("Profile");
 
   const [isMobile, setIsMobile] =
     useState(
@@ -84,7 +84,7 @@ export default function Dashboard() {
         return <NFT />;
 
       default:
-        return <Vision />;
+        return <Profile />;
     }
   };
 

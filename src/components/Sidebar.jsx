@@ -5,7 +5,7 @@ export default function Sidebar({
   setActive,
 }) {
   const [systemOpen, setSystemOpen] =
-    useState(true);
+    useState(false);
 
   const [mobileOpen, setMobileOpen] =
     useState(false);
