@@ -22,6 +22,11 @@ export default function Quests() {
   } = useAppStore();
 
   const [
+    currentUsername,
+    setCurrentUsername,
+  ] = useState("");
+
+  const [
     showReward,
     setShowReward,
   ] = useState(false);
@@ -56,11 +61,10 @@ export default function Quests() {
     setErrorMessage,
   ] = useState("");
 
-  // FINAL FIX
   const hasCustomUsername =
-    username &&
-    username.trim() !== "" &&
-    username !==
+    currentUsername &&
+    currentUsername.trim() !== "" &&
+    currentUsername !==
       "Unnamed Entity";
 
   const questList = [
@@ -238,6 +242,10 @@ export default function Quests() {
 
       if (!user) return;
 
+      setCurrentUsername(
+        user.username || ""
+      );
+
       const completed =
         user.completed_quests ||
         {};
@@ -319,7 +327,6 @@ export default function Quests() {
       return;
     }
 
-    // FINAL NAME QUEST FIX
     if (
       type === "name" &&
       !hasCustomUsername
@@ -590,36 +597,60 @@ export default function Quests() {
 
         <button
           disabled={
-            (requiresAnswer &&
-              !hasAnswer) ||
+            (
+              requiresAnswer &&
+              !hasAnswer
+            ) ||
             isQuizLocked(
               quest.id
+            ) ||
+            (
+              quest.id ===
+                "name" &&
+              !hasCustomUsername
             )
           }
+
           onClick={() =>
             rewardQuest(
               quest
             )
           }
+
           className="mint-button"
+
           style={{
             width: "140px",
             marginTop: 0,
 
             opacity:
-              (requiresAnswer &&
-                !hasAnswer) ||
+              (
+                requiresAnswer &&
+                !hasAnswer
+              ) ||
               isQuizLocked(
                 quest.id
+              ) ||
+              (
+                quest.id ===
+                  "name" &&
+                !hasCustomUsername
               )
                 ? 0.35
                 : 1,
 
             cursor:
-              (requiresAnswer &&
-                !hasAnswer) ||
+              (
+                requiresAnswer &&
+                !hasAnswer
+              ) ||
               isQuizLocked(
                 quest.id
+              ) ||
+              (
+                quest.id ===
+                  "name" &&
+                !hasCustomUsername
               )
                 ? "not-allowed"
                 : "pointer",
