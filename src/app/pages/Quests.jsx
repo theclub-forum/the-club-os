@@ -42,14 +42,19 @@ export default function Quests() {
   ] = useState({});
 
   const [
-    quests,
-    setQuests,
-  ] = useState({});
-
-  const [
     selectedAnswers,
     setSelectedAnswers,
   ] = useState({});
+
+  const [
+    quizCooldowns,
+    setQuizCooldowns,
+  ] = useState({});
+
+  const [
+    errorMessage,
+    setErrorMessage,
+  ] = useState("");
 
   const questList = [
     {
@@ -179,6 +184,10 @@ export default function Quests() {
         "RESEARCH",
       description:
         "Choose the continuity principle you align with.",
+
+      correctAnswer:
+        "Persistent reputation",
+
       options: [
         "Follower count",
         "Persistent reputation",
@@ -196,6 +205,10 @@ export default function Quests() {
         "RESEARCH",
       description:
         "Select the strongest long-term signal.",
+
+      correctAnswer:
+        "Verified continuity",
+
       options: [
         "Infinite content",
         "Verified continuity",
@@ -224,26 +237,13 @@ export default function Quests() {
 
       setClaimed(completed);
 
-      const available = {};
+      const storedCooldowns =
+        user.quiz_cooldowns ||
+        {};
 
-      questList.forEach(
-        (quest) => {
-          available[
-            quest.id
-          ] = true;
-        }
+      setQuizCooldowns(
+        storedCooldowns
       );
-
-      if (
-        !username ||
-        username ===
-          "Unnamed Entity"
-      ) {
-        available.name =
-          false;
-      }
-
-      setQuests(available);
 
       const lastDaily =
         user.daily_claim_at;
@@ -279,11 +279,31 @@ export default function Quests() {
     loadQuestState();
   }, [address, username]);
 
+  function isQuizLocked(
+    questId
+  ) {
+    const lockedUntil =
+      quizCooldowns[questId];
+
+    if (!lockedUntil)
+      return false;
+
+    return (
+      new Date(
+        lockedUntil
+      ) > new Date()
+    );
+  }
+
   async function rewardQuest(
-    type,
-    amount
+    quest
   ) {
     if (!address) return;
+
+    const type = quest.id;
+
+    const amount =
+      quest.reward;
 
     if (
       type === "daily" &&
@@ -297,6 +317,79 @@ export default function Quests() {
       claimed[type]
     ) {
       return;
+    }
+
+    if (
+      quest.correctAnswer
+    ) {
+      if (
+        isQuizLocked(type)
+      ) {
+        setErrorMessage(
+          "QUIZ LOCKED • TRY AGAIN IN 12 HOURS"
+        );
+
+        setTimeout(() => {
+          setErrorMessage(
+            ""
+          );
+        }, 3500);
+
+        return;
+      }
+
+      const selected =
+        selectedAnswers[
+          type
+        ];
+
+      if (
+        selected !==
+        quest.correctAnswer
+      ) {
+        const lockedUntil =
+          new Date(
+            Date.now() +
+              12 *
+                60 *
+                60 *
+                1000
+          ).toISOString();
+
+        const updatedCooldowns =
+          {
+            ...quizCooldowns,
+            [type]:
+              lockedUntil,
+          };
+
+        setQuizCooldowns(
+          updatedCooldowns
+        );
+
+        await supabase
+          .from("users")
+          .update({
+            quiz_cooldowns:
+              updatedCooldowns,
+          })
+          .eq(
+            "wallet",
+            address
+          );
+
+        setErrorMessage(
+          "INCORRECT ANSWER • QUEST LOCKED FOR 12 HOURS"
+        );
+
+        setTimeout(() => {
+          setErrorMessage(
+            ""
+          );
+        }, 4000);
+
+        return;
+      }
     }
 
     try {
@@ -403,6 +496,25 @@ export default function Quests() {
       );
     }
 
+    if (
+      isQuizLocked(
+        quest.id
+      )
+    ) {
+      return (
+        <div
+          style={{
+            opacity: 0.35,
+            letterSpacing:
+              "2px",
+            fontSize: "11px",
+          }}
+        >
+          LOCKED 12H
+        </div>
+      );
+    }
+
     const requiresAnswer =
       quest.options;
 
@@ -444,13 +556,15 @@ export default function Quests() {
 
         <button
           disabled={
-            requiresAnswer &&
-            !hasAnswer
+            (requiresAnswer &&
+              !hasAnswer) ||
+            isQuizLocked(
+              quest.id
+            )
           }
           onClick={() =>
             rewardQuest(
-              quest.id,
-              quest.reward
+              quest
             )
           }
           className="mint-button"
@@ -459,14 +573,20 @@ export default function Quests() {
             marginTop: 0,
 
             opacity:
-              requiresAnswer &&
-              !hasAnswer
+              (requiresAnswer &&
+                !hasAnswer) ||
+              isQuizLocked(
+                quest.id
+              )
                 ? 0.35
                 : 1,
 
             cursor:
-              requiresAnswer &&
-              !hasAnswer
+              (requiresAnswer &&
+                !hasAnswer) ||
+              isQuizLocked(
+                quest.id
+              )
                 ? "not-allowed"
                 : "pointer",
           }}
@@ -703,6 +823,49 @@ export default function Quests() {
         visible={showReward}
         amount={rewardAmount}
       />
+
+      {errorMessage && (
+        <div
+          style={{
+            position:
+              "fixed",
+
+            top: "40px",
+
+            left: "50%",
+
+            transform:
+              "translateX(-50%)",
+
+            background:
+              "rgba(255,60,60,0.12)",
+
+            border:
+              "1px solid rgba(255,80,80,0.18)",
+
+            padding:
+              "18px 26px",
+
+            borderRadius:
+              "18px",
+
+            zIndex: 999999,
+
+            backdropFilter:
+              "blur(20px)",
+
+            letterSpacing:
+              "2px",
+
+            fontSize: "11px",
+
+            color:
+              "rgba(255,255,255,0.9)",
+          }}
+        >
+          {errorMessage}
+        </div>
+      )}
 
       <div className="page">
         <div className="page-label">
