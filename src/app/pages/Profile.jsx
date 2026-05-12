@@ -39,7 +39,6 @@ export default function Profile() {
     setWallet,
     setUsername,
     setPoints,
-    setRole,
     setOwnedNFTs,
 
     setReferralCode,
@@ -69,7 +68,6 @@ export default function Profile() {
       if (!address) return;
 
       try {
-        // LOAD REFERRAL FROM LOCAL STORAGE
         const savedReferral =
           localStorage.getItem(
             "theclub_referral"
@@ -98,17 +96,11 @@ export default function Profile() {
             0
         );
 
-        setRole(
-          user.role ||
-            "Visitor"
-        );
-
         setReferralCode(
           user.referral_code ||
             ""
         );
 
-        // LOAD INVITED USERS
         const { data: invited } =
           await supabase
             .from("users")
@@ -122,7 +114,6 @@ export default function Profile() {
           invited || []
         );
 
-        // CALCULATE REFERRAL EARNINGS
         let earnings = 0;
 
         if (invited) {
@@ -141,7 +132,6 @@ export default function Profile() {
           earnings
         );
 
-        // LOAD NFTS
         const owned =
           await checkNFTs(
             address
@@ -157,7 +147,6 @@ export default function Profile() {
           )
         );
 
-        // LOAD NFT CLAIM COOLDOWN
         if (user.nft_last_claim) {
           const lastClaim =
             new Date(
@@ -187,7 +176,6 @@ export default function Profile() {
           }
         }
 
-        // CLEAR REFERRAL AFTER SUCCESSFUL ACCOUNT CREATION
         if (
           isNew &&
           savedReferral
@@ -197,7 +185,6 @@ export default function Profile() {
           );
         }
 
-        // ACTIVATION ANIMATION
         if (isNew) {
           setShowActivation(
             true
@@ -406,7 +393,7 @@ export default function Profile() {
                 fontSize: "12px",
               }}
             >
-              RANK
+              STATUS
             </span>
 
             <span>{role}</span>

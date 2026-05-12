@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 
+import { useAccount } from "wagmi";
+
 import { supabase } from "../../lib/supabase";
 
 export default function Leaderboard() {
+  const { address } =
+    useAccount();
+
   const [leaderboard, setLeaderboard] =
     useState([]);
+
+  const [currentUser, setCurrentUser] =
+    useState(null);
 
   const isMobile =
     window.innerWidth <= 900;
@@ -17,7 +25,8 @@ export default function Leaderboard() {
           .select("*")
           .order("points", {
             ascending: false,
-          });
+          })
+          .limit(100);
 
       if (error) {
         console.log(error);
@@ -25,25 +34,234 @@ export default function Leaderboard() {
       }
 
       const formatted =
-        (data || []).map((user) => ({
-          id: user.wallet,
+        (data || []).map(
+          (user, index) => ({
+            id: user.wallet,
 
-          name:
-            user.username ||
-            "Unnamed Entity",
+            rank: index + 1,
 
-          score:
-            Number(user.points) || 0,
+            wallet:
+              user.wallet,
 
-          status:
-            user.role || "Visitor",
-        }));
+            name:
+              user.username ||
+              "Unnamed Entity",
 
-      setLeaderboard(formatted);
+            score:
+              Number(
+                user.points
+              ) || 0,
+
+            status:
+              user.role ||
+              "Visitor",
+          })
+        );
+
+      setLeaderboard(
+        formatted
+      );
+
+      if (address) {
+        const existing =
+          formatted.find(
+            (u) =>
+              u.wallet ===
+              address
+          );
+
+        if (existing) {
+          setCurrentUser(
+            existing
+          );
+        } else {
+          const {
+            data: self,
+          } = await supabase
+            .from("users")
+            .select("*")
+            .eq(
+              "wallet",
+              address
+            )
+            .single();
+
+          if (self) {
+            const higherUsers =
+              formatted.filter(
+                (u) =>
+                  u.score >
+                  Number(
+                    self.points
+                  )
+              ).length;
+
+            setCurrentUser({
+              id: self.wallet,
+
+              wallet:
+                self.wallet,
+
+              rank:
+                higherUsers +
+                1,
+
+              name:
+                self.username ||
+                "Unnamed Entity",
+
+              score:
+                Number(
+                  self.points
+                ) || 0,
+
+              status:
+                self.role ||
+                "Visitor",
+            });
+          }
+        }
+      }
     }
 
     loadLeaderboard();
-  }, []);
+  }, [address]);
+
+  function renderRow(
+    user,
+    sticky = false
+  ) {
+    return (
+      <div
+        key={user.id}
+        style={{
+          display: "grid",
+
+          gridTemplateColumns:
+            isMobile
+              ? "70px 1fr auto"
+              : "140px 1fr 180px 220px",
+
+          gap: isMobile
+            ? "12px"
+            : "0",
+
+          padding: isMobile
+            ? "18px 12px"
+            : "24px",
+
+          borderBottom:
+            sticky
+              ? "1px solid rgba(255,255,255,0.08)"
+              : "1px solid rgba(255,255,255,0.05)",
+
+          alignItems:
+            "center",
+
+          background:
+            sticky
+              ? "rgba(255,255,255,0.04)"
+              : "transparent",
+
+          backdropFilter:
+            sticky
+              ? "blur(20px)"
+              : undefined,
+
+          position: sticky
+            ? "sticky"
+            : "relative",
+
+          top: sticky
+            ? 0
+            : undefined,
+
+          zIndex: sticky
+            ? 5
+            : 1,
+        }}
+      >
+        <div
+          style={{
+            opacity: 0.4,
+
+            letterSpacing:
+              "2px",
+
+            fontSize:
+              isMobile
+                ? "11px"
+                : undefined,
+
+            whiteSpace:
+              "nowrap",
+          }}
+        >
+          #
+          {String(
+            user.rank
+          ).padStart(3, "0")}
+        </div>
+
+        <div
+          style={{
+            fontSize:
+              isMobile
+                ? "13px"
+                : "15px",
+
+            letterSpacing:
+              isMobile
+                ? "1px"
+                : "2px",
+
+            overflow:
+              "hidden",
+
+            textOverflow:
+              "ellipsis",
+
+            whiteSpace:
+              "nowrap",
+          }}
+        >
+          {user.name}
+        </div>
+
+        <div
+          style={{
+            opacity: 0.7,
+
+            textAlign:
+              "right",
+
+            fontSize:
+              isMobile
+                ? "12px"
+                : undefined,
+
+            whiteSpace:
+              "nowrap",
+          }}
+        >
+          {user.score} PTS
+        </div>
+
+        {!isMobile && (
+          <div
+            style={{
+              opacity: 0.45,
+
+              letterSpacing:
+                "2px",
+            }}
+          >
+            {user.status}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -70,15 +288,17 @@ export default function Leaderboard() {
             ? "9px"
             : "11px",
 
-          letterSpacing: isMobile
-            ? "3px"
-            : "5px",
+          letterSpacing:
+            isMobile
+              ? "3px"
+              : "5px",
 
           opacity: 0.35,
 
-          marginBottom: isMobile
-            ? "12px"
-            : "18px",
+          marginBottom:
+            isMobile
+              ? "12px"
+              : "18px",
         }}
       >
         GLOBAL REPUTATION INDEX
@@ -90,19 +310,52 @@ export default function Leaderboard() {
             ? "42px"
             : "62px",
 
-          lineHeight: isMobile
-            ? "1"
-            : undefined,
+          lineHeight:
+            isMobile
+              ? "1"
+              : undefined,
 
           fontWeight: 300,
 
-          marginBottom: isMobile
-            ? "30px"
-            : "50px",
+          marginBottom:
+            isMobile
+              ? "30px"
+              : "50px",
         }}
       >
         Leaderboard
       </div>
+
+      {currentUser && (
+        <div
+          style={{
+            marginBottom:
+              "30px",
+          }}
+        >
+          <div
+            style={{
+              opacity: 0.35,
+
+              letterSpacing:
+                "3px",
+
+              fontSize:
+                "11px",
+
+              marginBottom:
+                "10px",
+            }}
+          >
+            YOUR POSITION
+          </div>
+
+          {renderRow(
+            currentUser,
+            true
+          )}
+        </div>
+      )}
 
       {leaderboard.length ===
         0 && (
@@ -114,7 +367,8 @@ export default function Leaderboard() {
 
             opacity: 0.35,
 
-            letterSpacing: "3px",
+            letterSpacing:
+              "3px",
 
             fontSize: isMobile
               ? "11px"
@@ -126,105 +380,16 @@ export default function Leaderboard() {
         </div>
       )}
 
-      {leaderboard.map(
-        (user, index) => (
-          <div
-            key={user.id}
-            style={{
-              display: "grid",
-
-              gridTemplateColumns:
-                isMobile
-                  ? "70px 1fr auto"
-                  : "140px 1fr 160px 220px",
-
-              gap: isMobile
-                ? "12px"
-                : "0",
-
-              padding: isMobile
-                ? "18px 12px"
-                : "24px",
-
-              borderBottom:
-                "1px solid rgba(255,255,255,0.05)",
-
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                opacity: 0.4,
-
-                letterSpacing: "2px",
-
-                fontSize: isMobile
-                  ? "11px"
-                  : undefined,
-
-                whiteSpace: "nowrap",
-              }}
-            >
-              #
-              {String(
-                index + 1
-              ).padStart(3, "0")}
-            </div>
-
-            <div
-              style={{
-                fontSize: isMobile
-                  ? "13px"
-                  : "15px",
-
-                letterSpacing:
-                  isMobile
-                    ? "1px"
-                    : "2px",
-
-                overflow: "hidden",
-
-                textOverflow:
-                  "ellipsis",
-
-                whiteSpace:
-                  "nowrap",
-              }}
-            >
-              {user.name}
-            </div>
-
-            <div
-              style={{
-                opacity: 0.7,
-
-                textAlign: "right",
-
-                fontSize: isMobile
-                  ? "12px"
-                  : undefined,
-
-                whiteSpace: "nowrap",
-              }}
-            >
-              {user.score} PTS
-            </div>
-
-            {!isMobile && (
-              <div
-                style={{
-                  opacity: 0.45,
-
-                  letterSpacing:
-                    "2px",
-                }}
-              >
-                {user.status}
-              </div>
-            )}
-          </div>
-        )
-      )}
+      <div
+        style={{
+          display: "grid",
+        }}
+      >
+        {leaderboard.map(
+          (user) =>
+            renderRow(user)
+        )}
+      </div>
     </div>
   );
 }

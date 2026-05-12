@@ -18,6 +18,7 @@ export default function Quests() {
     username,
     points,
     role,
+    invitedUsers,
     setPoints,
   } = useAppStore();
 
@@ -293,6 +294,30 @@ export default function Quests() {
 
     loadQuestState();
   }, [address, username]);
+
+  useEffect(() => {
+    async function updateRole() {
+      if (!address) return;
+
+      let newRole = "Visitor";
+
+      if (
+        invitedUsers &&
+        invitedUsers.length >= 10
+      ) {
+        newRole = "Ambassador";
+      }
+
+      await supabase
+        .from("users")
+        .update({
+          role: newRole,
+        })
+        .eq("wallet", address);
+    }
+
+    updateRole();
+  }, [invitedUsers, address]);
 
   function isQuizLocked(
     questId
@@ -996,7 +1021,7 @@ export default function Quests() {
                   "12px",
               }}
             >
-              RANK
+              STATUS
             </span>
 
             <span>

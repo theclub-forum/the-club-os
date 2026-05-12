@@ -1,7 +1,19 @@
 import { create } from "zustand";
 
+function calculateStatus(
+  invitedUsers = []
+) {
+  if (
+    invitedUsers.length >= 10
+  ) {
+    return "AMBASSADOR";
+  }
+
+  return "VISITOR";
+}
+
 export const useAppStore =
-  create((set) => ({
+  create((set, get) => ({
     wallet: null,
 
     username:
@@ -9,7 +21,7 @@ export const useAppStore =
 
     points: 0,
 
-    role: "Visitor",
+    role: "VISITOR",
 
     ownedNFTs: [],
 
@@ -67,6 +79,11 @@ export const useAppStore =
     ) =>
       set({
         invitedUsers,
+
+        role:
+          calculateStatus(
+            invitedUsers
+          ),
       }),
 
     setCompletedQuests: (
@@ -75,4 +92,14 @@ export const useAppStore =
       set({
         completedQuests,
       }),
+
+    getStatus: () => {
+      const {
+        invitedUsers,
+      } = get();
+
+      return calculateStatus(
+        invitedUsers
+      );
+    },
   }));
