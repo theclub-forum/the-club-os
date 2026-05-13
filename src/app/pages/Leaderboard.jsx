@@ -140,7 +140,7 @@ export default function Leaderboard() {
           gridTemplateColumns:
             isMobile
               ? "70px 1fr auto"
-              : "140px 1fr 180px 220px",
+              : "140px 1fr 320px",
 
           gap: isMobile
             ? "12px"
@@ -230,35 +230,60 @@ export default function Leaderboard() {
 
         <div
           style={{
-            opacity: 0.7,
+            display: "flex",
 
-            textAlign:
-              "right",
+            justifyContent:
+              "space-between",
 
-            fontSize:
+            alignItems:
+              "center",
+
+            gap: "40px",
+
+            paddingLeft:
               isMobile
-                ? "12px"
-                : undefined,
+                ? "0"
+                : "40px",
 
             whiteSpace:
               "nowrap",
           }}
         >
-          {user.score} PTS
-        </div>
-
-        {!isMobile && (
           <div
             style={{
-              opacity: 0.45,
+              opacity: 0.7,
 
-              letterSpacing:
-                "2px",
+              textAlign:
+                "right",
+
+              fontSize:
+                isMobile
+                  ? "12px"
+                  : undefined,
             }}
           >
-            {user.status}
+            {user.score} PTS
           </div>
-        )}
+
+          {!isMobile && (
+            <div
+              style={{
+                opacity: 0.45,
+
+                letterSpacing:
+                  "2px",
+
+                minWidth:
+                  "120px",
+
+                textAlign:
+                  "right",
+              }}
+            >
+              {user.status}
+            </div>
+          )}
+        </div>
       </div>
     );
   }
